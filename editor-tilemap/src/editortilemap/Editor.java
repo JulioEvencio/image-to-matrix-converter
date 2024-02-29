@@ -69,10 +69,21 @@ public class Editor extends Canvas implements Runnable {
 
 		Graphics render = this.renderer.getGraphics();
 
-		render.setColor(Color.BLACK);
+		render.setColor(Color.WHITE);
 		render.fillRect(0, 0, this.WIDTH, this.HEIGHT);
 
-		// Code
+		render.setColor(Color.BLACK);
+
+		int rectSize = 32;
+
+		int width = this.WIDTH / rectSize;
+		int height = this.HEIGHT / rectSize;
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				render.drawRect(i * rectSize, j * rectSize, rectSize, rectSize);
+			}
+		}
 
 		render.dispose();
 
