@@ -1,11 +1,13 @@
 package editortilemap;
 
-import editortilemap.gui.Editor;
+import javax.swing.SwingUtilities;
 
 public class Main {
 
 	public static void main(String[] args) {
-		new Editor();
+		SwingUtilities.invokeLater(() -> {
+			new Thread(new Editor()).start();
+		});
 	}
 
 }
