@@ -8,6 +8,9 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.border.EmptyBorder;
 
 import editortilemap.util.Util;
 
@@ -27,13 +30,26 @@ public class Editor extends Canvas implements Runnable {
 
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.setTitle(Util.TITLE);
-		this.frame.setSize(this.WIDTH, this.HEIGHT);
-		this.frame.setLocationRelativeTo(null);
-		this.frame.setResizable(false);
-		this.frame.setVisible(true);
+
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBorder(new EmptyBorder(0, 10, 0, 10));
+		frame.setJMenuBar(menuBar);
+
+		JMenu menuGame = new JMenu("File");
+		menuBar.add(menuGame);
+
+		menuGame.add(Util.createJMenuItem("New File", () -> System.out.println("New File")));
+		menuGame.add(Util.createJMenuItem("Save File", () -> System.out.println("Save File")));
+		menuGame.add(Util.createJMenuItem("Load File", () -> System.out.println("Load File")));
+		menuGame.add(Util.createJMenuItem("Quit", () -> System.out.println("Quit")));
 
 		this.setPreferredSize(new Dimension(this.WIDTH, this.HEIGHT));
 		this.frame.add(this);
+
+		this.frame.pack();
+		this.frame.setLocationRelativeTo(null);
+		this.frame.setResizable(false);
+		this.frame.setVisible(true);
 
 		this.renderer = new BufferedImage(this.WIDTH, this.HEIGHT, BufferedImage.TYPE_INT_RGB);
 	}
