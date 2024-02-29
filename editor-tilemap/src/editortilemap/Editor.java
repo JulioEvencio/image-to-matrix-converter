@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
 import editortilemap.util.Util;
@@ -41,7 +42,7 @@ public class Editor extends Canvas implements Runnable {
 		menuGame.add(Util.createJMenuItem("New File", () -> System.out.println("New File")));
 		menuGame.add(Util.createJMenuItem("Save File", () -> System.out.println("Save File")));
 		menuGame.add(Util.createJMenuItem("Load File", () -> System.out.println("Load File")));
-		menuGame.add(Util.createJMenuItem("Quit", () -> System.out.println("Quit")));
+		menuGame.add(Util.createJMenuItem("Quit", () -> Editor.exit()));
 
 		this.setPreferredSize(new Dimension(this.WIDTH, this.HEIGHT));
 		this.frame.add(this);
@@ -114,6 +115,15 @@ public class Editor extends Canvas implements Runnable {
 				timer = System.currentTimeMillis();
 			}
 		}
+	}
+
+	public static void exit() {
+		System.exit(0);
+	}
+
+	public static void exitWithError(String message, Exception error) {
+		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+		Editor.exit();
 	}
 
 }
