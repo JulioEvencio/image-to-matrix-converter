@@ -4,6 +4,11 @@
  */
 package imagetomatrixconverter;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author julio
@@ -11,23 +16,36 @@ package imagetomatrixconverter;
 public class Converter {
     
     private static String pathImage;
-    private static String pathMatriz;
+    private static String folderName;
+    private static String fileName;
+    
+    private static List<String> lines;
     
     static {
         pathImage = "";
-        pathMatriz = "";
+        folderName = "";
+        fileName = "";
+        lines = new ArrayList<>();
     }
     
     public static void setPathIamge(String path) {
         Converter.pathImage = path;
     }
     
-    public static void setPathMatriz(String path) {
-        Converter.pathMatriz = path;
+    public static void setPathMatriz(String folderName, String fileName) {
+        Converter.folderName = folderName;
+        Converter.fileName = fileName;
     }
     
-    public static void convert() {
-        System.out.println(String.format("image: %s\nmatriz: %s", Converter.pathImage, Converter.pathMatriz));
+    public static void convert() throws Exception {
+        String fileFullName = Converter.folderName + "/" + Converter.fileName;
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileFullName))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        }
     }
     
 }
