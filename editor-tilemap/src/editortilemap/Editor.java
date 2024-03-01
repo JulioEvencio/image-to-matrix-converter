@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -13,20 +15,34 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
+import editortilemap.util.Rect;
 import editortilemap.util.Util;
 
 public class Editor extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final int WIDTH = 640;
-	private final int HEIGHT = 480;
+	private final int WIDTH;
+	private final int HEIGHT;
+
+	private final int RECT_SIZE_BASE;
 
 	private final JFrame frame;
 
 	private final BufferedImage renderer;
 
-	public Editor() {
+	private char currentSymbol;
+	private Color currentColor;
+
+	private final char[][] tilemap;
+	private final List<Rect> rects;
+
+	public Editor(int width, int height, int rectSizeBase) {
+		this.WIDTH = width;
+		this.HEIGHT = height;
+
+		this.RECT_SIZE_BASE = rectSizeBase;
+
 		this.frame = new JFrame();
 
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,7 +60,7 @@ public class Editor extends Canvas implements Runnable {
 		menuGame.add(Util.createJMenuItem("Load File", () -> System.out.println("Load File")));
 		menuGame.add(Util.createJMenuItem("Quit", () -> Editor.exit()));
 
-		this.setPreferredSize(new Dimension(this.WIDTH, this.HEIGHT));
+		this.setPreferredSize(new Dimension(this.WIDTH * this.RECT_SIZE_BASE, this.HEIGHT * this.RECT_SIZE_BASE));
 		this.frame.add(this);
 
 		this.frame.pack();
@@ -52,7 +68,22 @@ public class Editor extends Canvas implements Runnable {
 		this.frame.setResizable(false);
 		this.frame.setVisible(true);
 
-		this.renderer = new BufferedImage(this.WIDTH, this.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		this.renderer = new BufferedImage(this.WIDTH * this.RECT_SIZE_BASE, this.HEIGHT * this.RECT_SIZE_BASE,
+				BufferedImage.TYPE_INT_RGB);
+
+		this.currentSymbol = '0';
+		this.currentColor = Color.WHITE;
+
+		this.tilemap = new char[this.WIDTH][this.HEIGHT];
+		this.rects = new ArrayList<>();
+
+		for (int i = 0; i < this.WIDTH; i++) {
+			for (int j = 0; j < this.HEIGHT; j++) {
+				this.tilemap[i][j] = this.currentSymbol;
+				this.rects.add(new Rect(this.RECT_SIZE_BASE * i, this.RECT_SIZE_BASE * j, this.RECT_SIZE_BASE,
+						this.RECT_SIZE_BASE, this.currentSymbol, this.currentColor));
+			}
+		}
 	}
 
 	private void tick() {
@@ -70,19 +101,12 @@ public class Editor extends Canvas implements Runnable {
 		Graphics render = this.renderer.getGraphics();
 
 		render.setColor(Color.WHITE);
-		render.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+		render.fillRect(0, 0, this.WIDTH * this.RECT_SIZE_BASE, this.HEIGHT * this.RECT_SIZE_BASE);
 
 		render.setColor(Color.BLACK);
 
-		int rectSize = 32;
-
-		int width = this.WIDTH / rectSize;
-		int height = this.HEIGHT / rectSize;
-
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				render.drawRect(i * rectSize, j * rectSize, rectSize, rectSize);
-			}
+		for (Rect rect : rects) {
+			rect.render(render);
 		}
 
 		render.dispose();
@@ -90,9 +114,10 @@ public class Editor extends Canvas implements Runnable {
 		Graphics graphics = bs.getDrawGraphics();
 
 		graphics.setColor(Color.BLACK);
-		graphics.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+		graphics.fillRect(0, 0, this.WIDTH * this.RECT_SIZE_BASE, this.HEIGHT * this.RECT_SIZE_BASE);
 
-		graphics.drawImage(this.renderer, 0, 0, this.WIDTH, this.HEIGHT, null);
+		graphics.drawImage(this.renderer, 0, 0, this.WIDTH * this.RECT_SIZE_BASE, this.HEIGHT * this.RECT_SIZE_BASE,
+				null);
 
 		bs.show();
 	}
