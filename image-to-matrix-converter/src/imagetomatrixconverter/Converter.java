@@ -24,8 +24,6 @@ public class Converter {
     private static String folderName;
     private static String fileName;
     
-    private static int[][] matriz;
-    
     private static final List<String> lines;
     private static final Map<Integer, Integer> pixelValues;
     
@@ -47,6 +45,13 @@ public class Converter {
     }
     
     public static void convert() throws Exception {
+        if (Converter.pathImage.isBlank() || Converter.folderName.isBlank() ||Converter.fileName.isBlank()) {
+            throw new Exception("Image and folder cannot be empty");
+        }
+        
+        Converter.lines.clear();
+        Converter.pixelValues.clear();
+        
         String fileFullName = Converter.folderName + "/" + Converter.fileName;
         
         Converter.auxConvert();
@@ -57,6 +62,13 @@ public class Converter {
                 writer.newLine();
             }
         }
+        
+        Converter.pathImage = "";
+        Converter.folderName = "";
+        Converter.fileName = "";
+        
+        Converter.lines.clear();
+        Converter.pixelValues.clear();
     }
     
     private static void auxConvert() throws Exception {
@@ -66,31 +78,23 @@ public class Converter {
         
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
         
-        Converter.matriz = new int[image.getHeight()][image.getWidth()];
-        
         int matrizValues = 0;
         
         for (int i = 0; i < image.getWidth(); i++) {
+            String line = "{";
+
             for (int j = 0; j < image.getHeight(); j++) {
                 int currentPixel = pixels[i + (j * image.getWidth())];
                 
                 if (Converter.pixelValues.containsKey(currentPixel)) {
                     int value = Converter.pixelValues.get(currentPixel);
                     
-                    Converter.matriz[j][i] = value;
+                    line += "'" + value + "',";
                 } else {
-                    Converter.matriz[j][i] = matrizValues;
                     Converter.pixelValues.put(currentPixel, matrizValues);
+                    line += "'" + matrizValues + "',";
                     matrizValues++;
                 }
-            }
-        }
-        
-        for (int j = 0; j < Converter.matriz[0].length; j++) {
-            String line = "{";
-            
-            for (int i = 0; i < Converter.matriz.length; i++) {
-                line += "'" + Converter.matriz[i][j] + "',";
             }
             
             line = line.substring(0, line.length() - 1);

@@ -101,7 +101,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="newFileName">
           <Properties>
-            <Property name="text" type="java.lang.String" value="matriz name"/>
+            <Property name="text" type="java.lang.String" value="Matriz name"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton3">

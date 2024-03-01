@@ -5,9 +5,7 @@
 package imagetomatrixconverter;
 
 import java.time.Instant;
-import java.util.Date;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 
 /**
@@ -58,7 +56,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        newFileName.setText("matriz name");
+        newFileName.setText("Matriz name");
 
         jButton3.setText("Convert");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -152,6 +150,9 @@ public class Main extends javax.swing.JFrame {
         try {
             Converter.convert();
             JOptionPane.showMessageDialog(this, "Matrix created", "Sucess", JOptionPane.INFORMATION_MESSAGE);
+            
+            this.fileName.setText("Image name");
+            this.newFileName.setText("Matriz name");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
