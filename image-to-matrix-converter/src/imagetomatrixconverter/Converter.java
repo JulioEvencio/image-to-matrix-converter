@@ -9,9 +9,7 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
@@ -25,14 +23,13 @@ public class Converter {
     private static String fileName;
     
     private static final List<String> lines;
-    private static final Map<Integer, Integer> pixelValues;
     
     static {
         pathImage = "";
         folderName = "";
         fileName = "";
+
         lines = new ArrayList<>();
-        pixelValues = new HashMap<>();
     }
     
     public static void setPathIamge(String path) {
@@ -48,9 +45,6 @@ public class Converter {
         if (Converter.pathImage.isBlank() || Converter.folderName.isBlank() ||Converter.fileName.isBlank()) {
             throw new Exception("Image and folder cannot be empty");
         }
-        
-        Converter.lines.clear();
-        Converter.pixelValues.clear();
         
         String fileFullName = Converter.folderName + "/" + Converter.fileName;
         
@@ -68,7 +62,6 @@ public class Converter {
         Converter.fileName = "";
         
         Converter.lines.clear();
-        Converter.pixelValues.clear();
     }
     
     private static void auxConvert() throws Exception {
@@ -78,23 +71,13 @@ public class Converter {
         
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
         
-        int matrizValues = 0;
-        
         for (int i = 0; i < image.getWidth(); i++) {
             String line = "{";
 
             for (int j = 0; j < image.getHeight(); j++) {
                 int currentPixel = pixels[i + (j * image.getWidth())];
                 
-                if (Converter.pixelValues.containsKey(currentPixel)) {
-                    int value = Converter.pixelValues.get(currentPixel);
-                    
-                    line += "'" + value + "',";
-                } else {
-                    Converter.pixelValues.put(currentPixel, matrizValues);
-                    line += "'" + matrizValues + "',";
-                    matrizValues++;
-                }
+                line += "'" + currentPixel + "',";
             }
             
             line = line.substring(0, line.length() - 1);
